@@ -1,0 +1,22 @@
+{
+  "name": "MyTimeline",
+  "ip": "192.168.0.140",
+  "listening_port": 7000,
+  "timeline": [
+    {
+      "time": 0,
+      "command": "/composition/layers/1/clips/1/connect",
+      "control": { "control_mode": "unique", "value": 1 }
+    },
+    {
+      "time": 1,
+      "command": "/composition/layers/2/video/opacity",
+      "control": { "control_mode": "animated", "value": [0, 1], "duration": 1 }
+    },
+    {
+      "time": 3,
+      "command": "/composition/layers/6/clips/1/connect",
+      "control": { "control_mode": "unique" }
+    }
+  ]
+}

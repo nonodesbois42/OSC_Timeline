@@ -1,0 +1,141 @@
+/* General styling */
+QWidget {
+  background-color: #303030;
+  color: #f0f0f0;
+}
+
+QLabel {
+  background-color: none;
+}
+
+/* Button styling */
+QPushButton {
+  background-color: #2196f3;
+  color: #f0f0f0;
+  border: 2px solid #2196f3;
+  border-radius: 5px;
+  padding: 4px;
+  min-width: 50px;
+}
+
+QPushButton:hover {
+  border: 2px solid #64b5f6;
+}
+
+QPushButton:pressed {
+  background-color: #1976d2;
+}
+
+QPushButton:disabled {
+  border: 2px solid #707070;
+  border-radius: 5px;
+  background-color: #707070;
+}
+
+/* Tab widget styling */
+QTabWidget::pane {
+  background-color: #303030;
+  border: none;
+}
+
+QTabBar::tab {
+  background-color: #303030;
+  color: #f0f0f0;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 8px;
+}
+
+QTabBar::tab:selected {
+  background-color: #2196f3;
+  border-bottom-color: #2196f3;
+}
+
+QTabBar::tab:hover {
+  background-color: #2196f3;
+  border-bottom-color: #2196f3;
+}
+
+/* Menu styling */
+QMenu {
+  background-color: #303030;
+  color: #f0f0f0;
+}
+
+QMenu::item:selected,
+QMenuBar::item:selected {
+  background-color: #2196f3;
+}
+
+/* Line edit styling */
+QLineEdit,
+QSpinBox,
+QDoubleSpinBox,
+QComboBox {
+  background-color: #505050;
+  color: #f0f0f0;
+  border: 1px solid #707070;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+QLineEdit:hover,
+QSpinBox:hover,
+QDoubleSpinBox:hover,
+QComboBox:hover {
+  background-color: #505050;
+  color: #f0f0f0;
+  border: 1px solid #707070;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+/* Down and up arrow styling (QComboBox, QSpinBox, QDoubleSpinBox) */
+QSpinBox::up-button,
+QSpinBox::down-button,
+QDoubleSpinBox::up-button,
+QDoubleSpinBox::down-button,
+QComboBox::drop-down {
+  background-color: transparent;
+  border: none;
+}
+
+QSpinBox::down-arrow,
+QDoubleSpinBox::down-arrow,
+QComboBox::down-arrow {
+  background-image: url(ui/resources/down_arrow.png);
+  width: 7px;
+  height: 5px;
+}
+
+QSpinBox::down-arrow:hover,
+QDoubleSpinBox::down-arrow:hover,
+QComboBox::down-arrow:hover {
+  background-image: url(ui/resources/down_arrow_hover.png);
+}
+
+/* Up arrow */
+QSpinBox::up-arrow,
+QDoubleSpinBox::up-arrow {
+  background-image: url(ui/resources/up_arrow.png);
+  width: 7px;
+  height: 5px;
+}
+
+QSpinBox::up-arrow:hover,
+QDoubleSpinBox::up-arrow:hover {
+  background-image: url(ui/resources/up_arrow_hover.png);
+}
+
+/* Progress Bar Styling */
+QProgressBar {
+  background-color: #707070;
+  text-align: center;
+  border: 1px solid #707070;
+  border-radius: 4px;
+}
+QProgressBar::chunk {
+  background-color: #2196f3;
+  border: 1px solid #707070;
+  border-radius: 4px;
+}
