@@ -42,3 +42,4 @@ env
 # Other
 testOSC.py
 timeline.json
+test_widget.py
