@@ -12,9 +12,11 @@ class EventWidgetScrollArea(QScrollArea):
 
     Signals:
         selected_id_changed: Emitted when the selected event ID changes.
+        number_events_changed: Emmited when the number of events has changed
     """
 
     selected_id_changed = pyqtSignal(object)
+    number_events_changed = pyqtSignal(int)
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -52,6 +54,7 @@ class EventWidgetScrollArea(QScrollArea):
                 widget.deleteLater()
         self.event_widget_dict = {}
         self.selected_id = None
+        self.number_events_changed.emit(0)
 
     def add_widget(self, event_widget: EventWidget):
         """
@@ -72,6 +75,8 @@ class EventWidgetScrollArea(QScrollArea):
         event_widget.selected.connect(self.handle_event_selected)
         event_widget.time_updated.connect(self.handle_time_updated)
 
+        self.number_events_changed.emit(len(self.event_widget_dict))
+
     def remove_widget(self, event_widget: EventWidget):
         """Remove EventWidget from the layout, not from the event_widget_dict"""
         self.vertical_layout.removeWidget(event_widget)
@@ -85,6 +90,8 @@ class EventWidgetScrollArea(QScrollArea):
 
             # Unselect event
             self.selected_id = None
+
+            self.number_events_changed.emit(len(self.event_widget_dict))
 
     def move_widget(self, event_widget: EventWidget, new_index: int):
         # Remove the event widget from its current position in the layout

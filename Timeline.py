@@ -242,6 +242,7 @@ class Timeline(QObject):
             self.start_time = time.perf_counter()
             self.elapsed_time = 0
             max_time = self.get_max_time()
+            self.progress.emit(0)
 
             for event in sorted_events:
                 # Calculate the remaining time until the event trigger
@@ -254,15 +255,16 @@ class Timeline(QObject):
                     self.elapsed_time = time.perf_counter() - self.start_time
                     time.sleep(0.01)
 
-                # Trigger the event here
-                event.trigger()
+                if self.state != State.NOT_RUNNING:
+                    # Trigger the event here
+                    event.trigger()
+                    self.progress.emit(int(self.elapsed_time / max_time * 100))
 
-                self.progress.emit(int(self.elapsed_time / max_time * 100))
 
-                # print(self.elapsed_time)
+            if self.state != State.NOT_RUNNING:
+                self.progress.emit(100)
 
             self.state = State.NOT_RUNNING
-            self.progress.emit(100)
 
         thread = threading.Thread(target=thread_func)
         thread.start()
