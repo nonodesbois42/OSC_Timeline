@@ -10,13 +10,6 @@
     <height>552</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>MainWindow</string>
-  </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>resources/icon.ico</normaloff>resources/icon.ico</iconset>
-  </property>
   <widget class="QWidget" name="central_widget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>

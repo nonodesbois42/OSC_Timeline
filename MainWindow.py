@@ -1,6 +1,6 @@
 import os
 from PyQt6.QtWidgets import QMainWindow, QFileDialog, QMessageBox
-
+from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QObject, pyqtSlot, QTimer
 
 # Model Classes
@@ -19,6 +19,8 @@ from Chronometer import Chronometer
 
 TIMER_INTERVAL = 10  # ms
 
+from Tools import absolute_path
+
 
 # Controller class of MainWindow
 class MainWindow(QMainWindow, Ui_MainWindow, QObject):
@@ -31,6 +33,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, QObject):
         self.version = 1.0
         self.windows_title = f"OSC Timeline v{self.version}"
         self.setWindowTitle(self.windows_title)
+        self.setWindowIcon(QIcon(absolute_path("ui/resources/icon.ico")))
 
         # Setup widgets
         self.init_widgets()
@@ -44,8 +47,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, QObject):
         self.timeline = Timeline()
 
         self.connect_signals_slots()
-
-        self.load_timeline(r"C:\Users\Nono\Desktop\Code\OSC Timeline\timeline.json")
+        self.new_timeline()
 
     def init_widgets(self):
         """
@@ -65,6 +67,10 @@ class MainWindow(QMainWindow, Ui_MainWindow, QObject):
         self.control_mode_box.addItems(
             [mode.value.capitalize() for mode in ControlMode]
         )
+
+        self.launch_button.setEnabled(False)
+        self.stop_button.setEnabled(False)
+        self.delete_button.setEnabled(False)
 
     def reset_timeline(self):
         """
@@ -93,6 +99,9 @@ class MainWindow(QMainWindow, Ui_MainWindow, QObject):
         # Event Viewer
         # Slot: scroll_area.handle_event_selected triggered by EventWidget.selected
         self.scroll_area.selected_id_changed.connect(self.show_event_attributes)
+        self.scroll_area.number_events_changed.connect(
+            self.handle_number_events_changed
+        )
         self.add_button.clicked.connect(self.add_event)
         self.delete_button.clicked.connect(self.delete_event)
 
@@ -247,6 +256,14 @@ class MainWindow(QMainWindow, Ui_MainWindow, QObject):
             self.timeline.remove_event(id)
             self.show_event_attributes()
 
+    @pyqtSlot(int)
+    def handle_number_events_changed(self, number_events: int):
+        """
+        Enable of disable the launch_button depending of the number of events in the timeline
+        Called by scroll_area.number_events_changed
+        """
+        self.launch_button.setEnabled(True if number_events else False)
+
     @pyqtSlot(object)
     def show_event_attributes(self, id: int | None = None):
         """
@@ -389,7 +406,6 @@ class MainWindow(QMainWindow, Ui_MainWindow, QObject):
             self.chronometer.stop()
             self.chronometer.reset()
             self.launch_button.setText("Launch")
-            self.progress_bar.setValue(0)
             self.stop_button.setEnabled(False)
         elif self.timeline.state == State.RUNNING:
             self.timer.start()

@@ -13,9 +13,6 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(728, 552)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("ui\\resources/icon.ico"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
-        MainWindow.setWindowIcon(icon)
         self.central_widget = QtWidgets.QWidget(parent=MainWindow)
         self.central_widget.setObjectName("central_widget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.central_widget)
@@ -275,7 +272,6 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.event_viewer_label.setText(_translate("MainWindow", "Event Viewer"))
         self.add_button.setText(_translate("MainWindow", "Add"))
         self.delete_button.setText(_translate("MainWindow", "Delete"))
