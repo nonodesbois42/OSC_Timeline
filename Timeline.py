@@ -23,8 +23,8 @@ DEFAULT_NAME = "Unknown name"
 
 class State(Enum):
     RUNNING = auto()
-    NOT_RUNNING = auto()
     PAUSED = auto()
+    STOPPED = auto()
 
 
 class Timeline(QObject):
@@ -57,9 +57,10 @@ class Timeline(QObject):
 
     def __init__(self, json_path: str = None):
         super().__init__()
-        self._state = State.NOT_RUNNING
+        self._state = State.STOPPED
         self.start_time = 0
         self.elapsed_time = 0
+        self.loop = False
         self.pause_event = threading.Event()
         self.pause_event.set()
         self.last_id: int = 0
@@ -83,7 +84,7 @@ class Timeline(QObject):
         """Reset timeline attributes"""
         self.start_time = 0
         self.elapsed_time = 0
-        self.state = State.NOT_RUNNING
+        self.state = State.STOPPED
         self.pause_event.set()
         self.last_id = 0
         self.name = DEFAULT_NAME
@@ -237,34 +238,43 @@ class Timeline(QObject):
         sorted_events = sorted(self.timeline.values(), key=lambda event: event.time)
 
         def thread_func():
-            self.log_message.emit("Timeline started")
-            self.state = State.RUNNING
-            self.start_time = time.perf_counter()
-            self.elapsed_time = 0
-            max_time = self.get_max_time()
-            self.progress.emit(0)
+            # if self.loop == False the loop will be executed at least once
+            # if self.loop == True the loop will be executed as long as self.loop is True
+            while True:
+                self.log_message.emit("Timeline started")
+                self.state = State.RUNNING
+                self.start_time = time.perf_counter()
+                self.elapsed_time = 0
+                max_time = self.get_max_time()
+                self.progress.emit(0)
 
-            for event in sorted_events:
-                # Calculate the remaining time until the event trigger
-                remaining_time = event.time - self.elapsed_time
-                while remaining_time > 0:
-                    if self.state == State.NOT_RUNNING:
-                        break
-                    self.pause_event.wait()
+                for event in sorted_events:
+                    # Calculate the remaining time until the event trigger
                     remaining_time = event.time - self.elapsed_time
-                    self.elapsed_time = time.perf_counter() - self.start_time
+                    while remaining_time > 0:
+                        if self.state == State.STOPPED:
+                            break
+                        self.pause_event.wait()
+                        remaining_time = event.time - self.elapsed_time
+                        self.elapsed_time = time.perf_counter() - self.start_time
+                        time.sleep(0.01)
+
+                    if self.state != State.STOPPED:
+                        # Trigger the event here
+                        event.trigger()
+                        self.progress.emit(int(self.elapsed_time / max_time * 100))
+
+                if self.state != State.STOPPED:
+                    self.progress.emit(100)
+
+                if not self.loop or self.state == State.STOPPED:
+                    # Exit the loop is self.loop is False or if timeline stopped
+                    self.state = State.STOPPED
+                    break
+                else:
+                    self.state = State.STOPPED
+                    # Delay to be sure the UI is updated
                     time.sleep(0.01)
-
-                if self.state != State.NOT_RUNNING:
-                    # Trigger the event here
-                    event.trigger()
-                    self.progress.emit(int(self.elapsed_time / max_time * 100))
-
-
-            if self.state != State.NOT_RUNNING:
-                self.progress.emit(100)
-
-            self.state = State.NOT_RUNNING
 
         thread = threading.Thread(target=thread_func)
         thread.start()
@@ -282,7 +292,7 @@ class Timeline(QObject):
         Stops the timeline execution
         """
         self.log_message.emit("Timeline stopped")
-        self.state = State.NOT_RUNNING
+        self.state = State.STOPPED
 
     def resume_timeline(self):
         """

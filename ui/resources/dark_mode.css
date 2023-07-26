@@ -32,6 +32,23 @@ QPushButton:disabled {
   background-color: #707070;
 }
 
+/* Special behavior for the loop button  */
+#loop_button {
+  background-color: #707070;
+}
+
+#loop_button:hover {
+  background-color: #707070;
+}
+
+#loop_button:pressed {
+  background-color: #1976d2;
+}
+
+#loop_button:checked {
+  background-color: #1976d2;
+}
+
 /* Tab widget styling */
 QTabWidget::pane {
   background-color: #303030;

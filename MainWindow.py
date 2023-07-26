@@ -119,6 +119,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, QObject):
         # Timeline controls
         self.launch_button.clicked.connect(self.handle_launch_button)
         self.stop_button.clicked.connect(self.handle_stop_button)
+        self.loop_button.clicked.connect(self.handle_loop_button)
         self.timer.timeout.connect(self.handle_timer)
 
     @pyqtSlot()
@@ -401,7 +402,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, QObject):
         """
         Slot called when the state of the timeline is changed by self.timeline
         """
-        if self.timeline.state == State.NOT_RUNNING:
+        if self.timeline.state == State.STOPPED:
             self.timer.stop()
             self.chronometer.stop()
             self.chronometer.reset()
@@ -424,7 +425,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, QObject):
         Slot called when the launch button is clicked.
         Widget: self.launch_button
         """
-        if self.timeline.state == State.NOT_RUNNING:
+        if self.timeline.state == State.STOPPED:
             self.timeline.run_timeline()
         elif self.timeline.state == State.RUNNING:
             self.timeline.pause_timeline()
@@ -438,6 +439,14 @@ class MainWindow(QMainWindow, Ui_MainWindow, QObject):
         Widget: self.stop_button
         """
         self.timeline.stop_timeline()
+
+    @pyqtSlot()
+    def handle_loop_button(self):
+        """
+        Slot called when the loop button is clicked.
+        Widget: self.loop_button
+        """
+        self.timeline.loop = self.loop_button.isChecked()
 
     @pyqtSlot()
     def handle_timer(self):
